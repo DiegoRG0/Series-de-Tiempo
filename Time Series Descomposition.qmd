@@ -20,9 +20,9 @@ empleo_tsbl <- us_employment |>
 
 ```{r}
 ## Download to CSV
-dir.create("Series-de-Tiempo/datos") #Para crear una carpeta
+# dir.create("datos") #Para crear una carpeta
 empleo_tsbl |>
-  write_csv("Series-de-Tiempo/datos/empleo_eeuu.csv")
+  write_csv("datos/empleo_eeuu.csv")
 ```
 
 
