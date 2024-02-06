@@ -1,0 +1,29 @@
+---
+title: "Time Series Decomposition"
+format: html
+---
+
+
+```{r}
+## Pkgs
+#| message: false
+library(tidyverse)
+library(fpp3)
+```
+
+```{r}
+## Data
+empleo_tsbl <- us_employment |>
+  filter(year(Month) >= 1990, Title == "Retail Trade") |>
+  select(-Series_ID)
+```
+
+```{r}
+## Download to CSV
+dir.create("Series-de-Tiempo/datos") #Para crear una carpeta
+empleo_tsbl |>
+  write_csv("Series-de-Tiempo/datos/empleo_eeuu.csv")
+```
+
+
+
