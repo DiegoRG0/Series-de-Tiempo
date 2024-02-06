@@ -1,0 +1,16 @@
+---
+title: "Tutorial"
+format: html
+---
+
+```{r}
+library(fpp2) #Data Basics
+```
+
+
+```{r}
+mpg #Data Basics
+```
+
+
+

@@ -1,0 +1,99 @@
+---
+title: "Time series visualizations"
+author: "PBH"
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+## pkgs
+
+```{r}
+#| message: false #Para quitar el texto que salen en las librerias cuando lo instalas
+library(tidyverse) #pkgs for data science
+library(fpp3) #pkgs for ts
+library(plotly) #plotly interactive plots
+library(patchwork) #for handling many pltos in one figure
+library(tidyquant) #toolkit for financial analysis and downloading data
+```
+
+## 
+
+```{r}
+aus_accommodation
+```
+
+
+
+```{r}
+
+# ALT + "-"    <- 
+# CTRL + SHIFT + M    |> 
+aus_accommodation|>
+  distinct(State)
+tasmania <- aus_accommodation |> 
+  filter(State == "Tasmania") |> 
+  #Para seleccionar una columna y quitarla
+  select(-CPI, -State) |>  #Quita CPI y State 
+  #select(Date:Occupancy) #Lo mismo que la de arriba-Selecciona de Date hasta Occupancy
+  #Select(Date, State, Takings, Occupancy) #Lo mismo que la de arriba-Selecciona las nombradas
+  mutate("Año union N 1"= 1) |> 
+  janitor::clean_names()
+tasmania
+
+tasmania |>
+  glimpse()
+names(tasmania)
+c(4, 8, 12, 5)
+c("Pablo", "Rodrigo", "Pato")
+```
+
+
+```{r}
+tasmania |> 
+  autoplot(takings, color="slateblue1", size=2) #slateblue1
+
+```
+```{r}
+tasmania |>
+  gg_season(log(takings))
+
+tasmania |>
+  gg_subseries(log(takings))
+```
+
+
+```{r}
+tasmania |>
+  gg_tsdisplay(log(takings), plot_type = "auto")
+```
+
+```{r}
+stocks <- c("TSLA", "GOOGL", "MSFT", "AAPL", "CEMEXCPO.MX")
+
+?tq_get
+stocks_data <-tq_get(
+  x = stocks,
+  get = "stock.prices",
+  from = "2014-01-01",
+  to = today()-1
+)
+stocks_data
+stocks_data |>
+  distinct(symbol)
+
+stocks_data <- stocks_data |>
+  as_tsibble(index = date, key = symbol)
+stocks_data
+```
+
+```{r}
+#| wanings: false
+stocks_data |>
+  ggplot(aes(x=date, open=open, high=high, low=low, close=close)) + 
+  theme_light() +
+  geom_candlestick() + 
+  facet_wrap(~symbol, ncol = 2, scales="free_y")
+```
+
