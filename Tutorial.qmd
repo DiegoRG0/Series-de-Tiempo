@@ -5,12 +5,36 @@ format: html
 
 ```{r}
 library(fpp2) #Data Basics
+library(nycflights13) #Data Basics
 ```
 
 
 ```{r}
 mpg #Data Basics
 ```
+
+```{r}
+flights #Data Basics
+```
+
+```{r}
+filter(flights, month == 1, day == 1) #Filter Observations
+```
+
+```{r}
+jan1 <- filter(flights, month == 1, day == 1) #Filter observations
+```
+
+```{r}
+filter(flights, month == 11 | month == 12) #& (and), | (or), ! (not or negation), and xor() (exactly or) #Filter observations
+```
+
+```{r}
+filter(flights, arr_delay >= 120) #Filter observations
+```
+
+
+
 
 
 
