@@ -1,0 +1,33 @@
+---
+title: "Tarea Descomposicion"
+format:
+  html:
+  embed-resources: true
+  toc: true
+---
+# Ejercicio 1
+
+# Ejercicio 2
+ 
+## i
+
+## ii
+
+## iii
+
+# Ejercicio 3
+
+# Ejercicio 4
+
+## i
+
+## ii
+
+## iii
+
+## iv
+
+## v
+
+## vi
+

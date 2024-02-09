@@ -1,29 +1,110 @@
 ---
 title: "Time Series Decomposition"
-format: html
+author: "PBH"
+format: docx
+toc: true
 ---
 
+## pkgs
 
 ```{r}
-## Pkgs
 #| message: false
 library(tidyverse)
 library(fpp3)
 ```
 
+## data
+
 ```{r}
-## Data
-empleo_tsbl <- us_employment |>
+empleo_tsbl <- us_employment |> 
   filter(year(Month) >= 1990, Title == "Retail Trade") |>
   select(-Series_ID)
 ```
 
+### download to csv
+
 ```{r}
-## Download to CSV
-# dir.create("datos") #Para crear una carpeta
-empleo_tsbl |>
-  write_csv("datos/empleo_eeuu.csv")
+# dir.create("parcial_1/datos") # Para crear una carpeta
+# empleo_tsbl |>
+#   write_csv("parcial_1/datos/empleo_eeuu.csv")
 ```
 
+```{r}
+empleo_tsbl |> 
+  autoplot(Employed)
+```
+
+
+## Classical Decomposition
+
+### `mable` (model table)
+
+```{r}
+empleo_decomp <- empleo_tsbl |> 
+  model(
+    clasica = classical_decomposition(Employed, 
+                                      type = "additive")
+  )
+
+empleo_decomp
+```
+
+### Components
+
+```{r}
+empleo_components <- empleo_decomp |> 
+  components()
+
+empleo_components
+
+empleo_components |> 
+  autoplot()
+```
+
+## STL Decomposition
+
+https://github.com/pbenavidesh/poop
+
+```{r}
+empleo_stl <- empleo_tsbl |> 
+  model(
+    stl = STL(Employed),
+    stl2 = STL(Employed ~ trend(window = 7) + season(window = "periodic"))
+  )
+
+empleo_stl |> 
+  components() |> 
+  autoplot()
+```
+
+## Exercises
+
+### 1
+
+```{r}
+#| warning: false
+
+# autoplot() version
+global_economy |> 
+  autoplot(GDP/Population) +
+  theme(legend.position = "none")
+
+# ggplot() version
+global_economy |> 
+  ggplot(aes(x = Year, y = GDP/Population, color = Country)) +
+  geom_line() +
+  theme(legend.position = "none")
+```
+
+```{r}
+global_economy |> 
+  mutate(gdp_per_capita = GDP/Population) |> #compute GDP per capita
+  select(-c(Code, Growth:Exports)) |>  # remove those columns
+  filter(Year %in% 2010:2017) |> # keep years from 2010 to 2017
+  as_tibble() |> # convert to tibble
+  group_by(Country) |> 
+  summarise(mean_gdppc = mean(gdp_per_capita, na.rm = TRUE)) |> 
+  arrange(desc(mean_gdppc)) # arrange descending
+```
 
 
