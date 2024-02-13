@@ -5,29 +5,87 @@ format:
   embed-resources: true
   toc: true
 ---
-# Ejercicio 1
 
-# Ejercicio 2
- 
-## i
 
-## ii
+```{r}
+#| message: false
+library(fma)
+library(ggplot2)
+library(dplyr)
+library(forecast)
+library(TSA)
+library(tsibble)
+```
 
-## iii
+```{r}
+library(tsibble)
+global_economy # No se porque no me lo encuentraaaaa
+```
 
-# Ejercicio 3
 
-# Ejercicio 4
+```{r}
+data("global_economy")
+global_economy %>%
+  group_by(country) %>%
+  mutate(PIB_per_capita = GDP/population) %>%
+  ggplot(aes(x = year, y = PIB_per_capita, color = country)) +
+  geom_line() +
+  theme(legend.position = "none") +
+  labs(x = "Año", y = "PIB per cápita", title = "Evolución del PIB per cápita por país")
 
-## i
+```
+```{r}
+data("global_economy")
+data("vic_elec")
 
-## ii
+ggplot() +
+  geom_line(data = subset(global_economy, country == "USA"), aes(x = year, y = GDP), color = "blue") +
+  geom_line(data = subset(global_economy, country == "Mexico"), aes(x = year, y = GDP), color = "red") +
+  labs(x = "Año", y = "PIB", title = "PIB de EEUU y México")
 
-## iii
+ggplot(data = vic_elec, aes(x = date, y = demand)) +
+  geom_line() +
+  labs(x = "Fecha", y = "Demanda de electricidad", title = "Demanda de electricidad en Victoria, Australia")
 
-## iv
+```
+```{r}
+data("plastics")
 
-## v
+ggplot(data = plastics, aes(x = time, y = prod_A)) +
+  geom_line() +
+  labs(x = "Tiempo", y = "Ventas (miles)", title = "Ventas mensuales del Producto A")
 
-## vi
+plastics_ts <- ts(plastics$prod_A, frequency = 12)
+decomposition <- decompose(plastics_ts, type = "multiplicative")
+
+trend <- decomposition$trend
+seasonal <- decomposition$seasonal
+
+autoplot(decomposition)
+
+```
+
+```{r}
+desestacionalizado <- plastics$prod_A / seasonal
+
+ggplot(data = data.frame(time = time(plastics_ts), desestacionalizado), aes(x = time, y = desestacionalizado)) +
+  geom_line() +
+  labs(x = "Tiempo", y = "Ventas desestacionalizadas", title = "Ventas mensuales desestacionalizadas del Producto A")
+
+```
+
+```{r}
+plastics$prod_A[50] <- plastics$prod_A[50] + 500
+
+plastics_ts_outlier <- ts(plastics$prod_A, frequency = 12)
+decomposition_outlier <- decompose(plastics_ts_outlier, type = "multiplicative")
+desestacionalizado_outlier <- plastics$prod_A / decomposition_outlier$seasonal
+
+ggplot(data = data.frame(time = time(plastics_ts_outlier), desestacionalizado_outlier), aes(x = time, y = desestacionalizado_outlier)) +
+  geom_line() +
+  labs(x = "Tiempo", y = "Ventas desestacionalizadas", title = "Ventas mensuales desestacionalizadas del Producto A (con outlier)")
+
+```
+
+
 
